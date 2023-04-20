@@ -1,0 +1,106 @@
+<div class="row">
+	<div class="col-sm-12">
+		<form>
+			<div class="row">
+
+				<div class="col-sm-6 col-md-3">
+					<div class="form-group">
+						<label>Invoice No.</label>
+						<input class="form-control" id="txtinv" type="text" disabled>
+					</div>
+				</div>
+				<div class="col-sm-6 col-md-3">
+					<label class="focus-label">Customer Name:</label>
+                    <div class="form-group form-focus select-focus">
+                        <select class="select floating" id="cname">
+                            
+                        </select>
+
+                    </div>
+				</div>
+				
+
+
+
+
+				<div class="col-sm-6 col-md-3">
+					<div class="form-group">
+						<label>Date</label>
+						<input class="form-control datetimepicker" placeholder="dd-mm-yyyy" id="date" type="text">
+					</div>
+				</div>
+				{{!-- <div class="col-sm-6 col-md-3">
+					<div class="form-group">
+						<label>SAC code</label>
+						<input class="form-control" id="saccode" type="taxt">
+					</div>
+				</div> --}}
+
+			</div>
+
+			<p id="error5" class="text-center text-danger"></p>
+			<div>
+				<button class="btn btn-primary submit-btn m-r-10" onclick="additem()">Add Item</button>
+			</div>
+			<br>
+			<br>
+
+			<div class="row">
+				<div class="col-md-12 col-sm-12">
+					<div class="table-responsive">
+						<table class="table table-hover table-white">
+							<thead>
+								<tr>
+
+									<th>Item</th>
+									<th>Service Description</th>
+									<th>SAC code</th>
+									<th>Net Amount</th>
+									<th>CGST(%)</th>
+									<th>CGST Amount</th>
+									<th>SGST(%)</th>
+									<th>SGST Amount</th>
+									<th>IGST(%)</th>
+									<th>IGST Amount</th>
+									<th>Total</th>
+									<th> </th>
+								</tr>
+							</thead>
+							<tbody id="tbd">
+							</tbody>
+							<tfoot>
+								<tr>
+									<td colspan="8"> </td>
+									<td colspan="2" class="text-right">CGST Total </td>
+									<td colspan="2" class="text-right" id="cgsttotal">0 </td>
+								</tr>
+								<tr>
+									<td colspan="8"> </td>
+									<td colspan="2" class="text-right">SGST Total </td>
+									<td colspan="2" class="text-right" id="sgsttotal">0 </td>
+								</tr>
+								<tr>
+									<td colspan="8"> </td>
+									<td colspan="2" class="text-right">IGST Total </td>
+									<td colspan="2" class="text-right" id="igsttotal">0 </td>
+								</tr>
+								<tr>
+									<td colspan="8"> </td>
+									<td colspan="2" class="text-right">Total </td>
+									<td colspan="2" class="text-right" id="txttotal">0 </td>
+								</tr>
+							</tfoot>
+						</table>
+
+
+
+					</div>
+				</div>
+				<p id="error6" class="text-center text-danger"></p>
+				<div class="submit-section">
+					<button class="btn btn-primary submit-btn m-r-10" onclick="store()">Save & Send</button>
+				</div>
+		</form>
+	</div>
+</div>
+</div>

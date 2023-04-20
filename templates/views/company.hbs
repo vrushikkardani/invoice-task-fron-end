@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {{>head}}
+</head>
+
+<body>
+    <!-- Main Wrapper -->
+    <div class="main-wrapper">
+
+        <!-- Header -->
+        {{>header}}
+        <!-- /Header -->
+
+        <!-- Sidebar -->
+        {{>sidebar}}
+        <!-- /Sidebar -->
+        <!-- Page Wrapper -->
+        <div class="page-wrapper">
+            <div class="content container-fluid">
+                <div class="page-header">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <h3 class="page-title">Company</h3>
+                            <ul class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="index">Home</a></li>
+                                <li class="breadcrumb-item active">Company</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                {{>companydit}}
+            </div>
+
+
+        </div>
+
+
+    </div>
+    <!-- /Page Wrapper -->
+
+    </div>
+    <!-- /Main Wrapper -->
+
+    {{>js}}
+
+</body>
+<script>
+    $(document).ready(function () {
+        $('#licompany').addClass('active');
+    });
+
+
+    function getCompany() {
+        const getToken = localStorage.getItem("Token")
+        const token = "Bearer" + " " + getToken
+        var myHeaders = new Headers();
+        myHeaders.append("Authorization", token);
+
+        var requestOptions = {
+            method: 'GET',
+            headers: myHeaders,
+        };
+
+        fetch(APIURl + "/api/company", requestOptions)
+            .then(response => response.json())
+            .then(result => {
+                // const Data = result.data[0];
+                //console.log("C:/Users/9G1/Desktop/Done Invoice Api/api/public/user-profile"+"/"+result.data[0].image)
+
+
+                document.getElementById("Website").value = result.data[0].Website;
+                // document.getElementById("image").files =APIURl+'/user-profile/'+result.data[0].image;
+                document.getElementById("output").src = APIURl + '/user-profile/' + result.data[0].image;
+                document.getElementById("Company_Name").value = result.data[0].Company_Name;
+                document.getElementById("Address").value = result.data[0].Address;
+                document.getElementById("Mobile_No").value = result.data[0].Mobile_No;
+                document.getElementById("Email_Id").value = result.data[0].Email_Id;
+                document.getElementById("PAN_No").value = result.data[0].PAN_No;
+                document.getElementById("Bank_Name").value = result.data[0].Bank_Name;
+                document.getElementById("Account_No").value = result.data[0].Account_No;
+                document.getElementById("ContactPerson").value = result.data[0].ContactPerson;
+                document.getElementById("Phone_No").value = result.data[0].Phone_No;
+                document.getElementById("GSTIN_No").value = result.data[0].GSTIN_No;
+                document.getElementById("Branch_Name").value = result.data[0].Branch_Name;
+                document.getElementById("IFSC_Code").value = result.data[0].IFSC_Code;
+                document.getElementById("outputt").src = APIURl + '/user-profile/' + result.data[0].image2;
+
+            })
+            .catch(error => console.log('error', error));
+    }
+    getCompany()
+
+    function addcompanydit() {
+        event.preventDefault();
+        document.getElementById("error4").innerHTML = "";
+        if (document.getElementById("image").value.trim() == "" && document.getElementById("Company_Name").value.trim() == "" && document.getElementById("Address").value.trim() == "" && document.getElementById("Mobile_No").value.trim() == "" && document.getElementById("Email_Id").value.trim() == "" && document.getElementById("PAN_No").value.trim() == "" && document.getElementById("Bank_Name").value.trim() == "" && document.getElementById("Account_No").value.trim() == "" && document.getElementById("ContactPerson").value.trim() == "" && document.getElementById("Phone_No").value.trim() == "" && document.getElementById("GSTIN_No").value.trim() == "" && document.getElementById("Website").value.trim() == "" && document.getElementById("Branch_Name").value.trim() == "" && document.getElementById("IFSC_Code").value.trim() == "" && document.getElementById("image").value.trim() == "") {
+            document.getElementById("error4").innerHTML = "Enter Company Logo , Company Name , Address , Mobile No , Email Id , Pan Number , Bank Name , Account Number , person Contact Number , Phone Number , GSTIN number , Website , Branch Name and IFSC Code";
+        } else if (document.getElementById("image").value.trim() == "" && document.getElementById("Company_Name").value.trim() == "" && document.getElementById("Address").value.trim() == "" && document.getElementById("Mobile_No").value.trim() == "" && document.getElementById("Email_Id").value.trim() == "" && document.getElementById("PAN_No").value.trim() == "" && document.getElementById("Bank_Name").value.trim() == "" && document.getElementById("Account_No").value.trim() == "" && document.getElementById("ContactPerson").value.trim() == "" && document.getElementById("Phone_No").value.trim() == "" && document.getElementById("GSTIN_No").value.trim() == "" && document.getElementById("Website").value.trim() == "" && document.getElementById("Branch_Name").value.trim() == "") {
+            document.getElementById("error4").innerHTML = "Enter Company Logo , Company Name , Address , Mobile No , Email Id , Pan Number , Bank Name , Account Number , person Contact Number , Phone Number , GSTIN number , Website and Branch Name ";
+        } else if (document.getElementById("image").value.trim() == "" && document.getElementById("Company_Name").value.trim() == "" && document.getElementById("Address").value.trim() == "" && document.getElementById("Mobile_No").value.trim() == "" && document.getElementById("Email_Id").value.trim() == "" && document.getElementById("PAN_No").value.trim() == "" && document.getElementById("Bank_Name").value.trim() == "" && document.getElementById("Account_No").value.trim() == "" && document.getElementById("ContactPerson").value.trim() == "" && document.getElementById("Phone_No").value.trim() == "" && document.getElementById("GSTIN_No").value.trim() == "" && document.getElementById("Website").value.trim() == "") {
+            document.getElementById("error4").innerHTML = "Enter Company Logo , Company Name , Address , Mobile No , Email Id , Pan Number , Bank Name , Account Number , person Contact Number , Phone Number , GSTIN number and Website";
+        } else if (document.getElementById("image").value.trim() == "" && document.getElementById("Company_Name").value.trim() == "" && document.getElementById("Address").value.trim() == "" && document.getElementById("Mobile_No").value.trim() == "" && document.getElementById("Email_Id").value.trim() == "" && document.getElementById("PAN_No").value.trim() == "" && document.getElementById("Bank_Name").value.trim() == "" && document.getElementById("Account_No").value.trim() == "" && document.getElementById("ContactPerson").value.trim() == "" && document.getElementById("Phone_No").value.trim() == "" && document.getElementById("GSTIN_No").value.trim() == "") {
+            document.getElementById("error4").innerHTML = "Enter Company Logo , Company Name , Address , Mobile No , Email Id , Pan Number , Bank Name , Account Number , person Contact Number , Phone Number and GSTIN number";
+        } else if (document.getElementById("image").value.trim() == "" && document.getElementById("Company_Name").value.trim() == "" && document.getElementById("Address").value.trim() == "" && document.getElementById("Mobile_No").value.trim() == "" && document.getElementById("Email_Id").value.trim() == "" && document.getElementById("PAN_No").value.trim() == "" && document.getElementById("Bank_Name").value.trim() == "" && document.getElementById("Account_No").value.trim() == "" && document.getElementById("ContactPerson").value.trim() == "" && document.getElementById("Phone_No").value.trim() == "") {
+            document.getElementById("error4").innerHTML = "Enter Company Logo , Company Name , Address , Mobile No , Email Id , Pan Number , Bank Name , Account Number , person Contact Number and Phone Number";
+        } else if (document.getElementById("image").value.trim() == "" && document.getElementById("Company_Name").value.trim() == "" && document.getElementById("Address").value.trim() == "" && document.getElementById("Mobile_No").value.trim() == "" && document.getElementById("Email_Id").value.trim() == "" && document.getElementById("PAN_No").value.trim() == "" && document.getElementById("Bank_Name").value.trim() == "" && document.getElementById("Account_No").value.trim() == "" && document.getElementById("ContactPerson").value.trim() == "") {
+            document.getElementById("error4").innerHTML = "Enter Company Logo , Company Name , Address , Mobile No , Email Id , Pan Number , Bank Name , Account Number and person Contact Number";
+        } else if (document.getElementById("image").value.trim() == "" && document.getElementById("Company_Name").value.trim() == "" && document.getElementById("Address").value.trim() == "" && document.getElementById("Mobile_No").value.trim() == "" && document.getElementById("Email_Id").value.trim() == "" && document.getElementById("PAN_No").value.trim() == "" && document.getElementById("Bank_Name").value.trim() == "" && document.getElementById("Account_No").value.trim() == "") {
+            document.getElementById("error4").innerHTML = "Enter Company Logo , Company Name , Address , Mobile No , Email Id , Pan Number , Bank Name and Account Number";
+        } else if (document.getElementById("image").value.trim() == "" && document.getElementById("Company_Name").value.trim() == "" && document.getElementById("Address").value.trim() == "" && document.getElementById("Mobile_No").value.trim() == "" && document.getElementById("Email_Id").value.trim() == "" && document.getElementById("PAN_No").value.trim() == "" && document.getElementById("Bank_Name").value.trim() == "") {
+            document.getElementById("error4").innerHTML = "Enter Company Logo , Company Name , Address , Mobile No , Email Id , Pan Number and Bank Name";
+        } else if (document.getElementById("image").value.trim() == "" && document.getElementById("Company_Name").value.trim() == "" && document.getElementById("Address").value.trim() == "" && document.getElementById("Mobile_No").value.trim() == "" && document.getElementById("Email_Id").value.trim() == "" && document.getElementById("PAN_No").value.trim() == "") {
+            document.getElementById("error4").innerHTML = "Enter Company Logo , Company Name , Address , Mobile No , Email Id and Pan Number";
+        } else if (document.getElementById("image").value.trim() == "" && document.getElementById("Company_Name").value.trim() == "" && document.getElementById("Address").value.trim() == "" && document.getElementById("Mobile_No").value.trim() == "" && document.getElementById("Email_Id").value.trim() == "") {
+            document.getElementById("error4").innerHTML = "Enter Company Logo , Company Name , Address , Mobile No and Email Id";
+        } else if (document.getElementById("image").value.trim() == "" && document.getElementById("Company_Name").value.trim() == "" && document.getElementById("Address").value.trim() == "" && document.getElementById("Mobile_No").value.trim() == "") {
+            document.getElementById("error4").innerHTML = "Enter Company Logo , Company Name , Address and Mobile No";
+        } else if (document.getElementById("image").value.trim() == "" && document.getElementById("Company_Name").value.trim() == "" && document.getElementById("Address").value.trim() == "") {
+            document.getElementById("error4").innerHTML = "Enter Company Logo , Company Name and Address";
+        } else if (document.getElementById("image").value.trim() == "" && document.getElementById("Company_Name").value.trim() == "") {
+            document.getElementById("error4").innerHTML = "Enter Company Logo , Company Name";
+        } else if (document.getElementById("Company_Name").value.trim() == "") {
+            document.getElementById("error4").innerHTML = "Enter Company Name";
+        } else if (document.getElementById("image").value.trim() == "") {
+            document.getElementById("error4").innerHTML = "Enter Company Logo";
+        } else if (document.getElementById("Address").value.trim() == "") {
+            document.getElementById("error4").innerHTML = "Enter Address";
+        } else if (document.getElementById("Mobile_No").value.trim() == "") {
+            document.getElementById("error4").innerHTML = "Enter Mobile number";
+        } else if (document.getElementById("Email_Id").value.trim() == "") {
+            document.getElementById("error4").innerHTML = "Enter Email Id";
+        } else if (document.getElementById("PAN_No").value.trim() == "") {
+            document.getElementById("error4").innerHTML = "Enter Pan Number";
+        } else if (document.getElementById("Bank_Name").value.trim() == "") {
+            document.getElementById("error4").innerHTML = "Enter Bank Name";
+        } else if (document.getElementById("Account_No").value.trim() == "") {
+            document.getElementById("error4").innerHTML = "Enter Account Number";
+        } else if (document.getElementById("ContactPerson").value.trim() == "") {
+            document.getElementById("error4").innerHTML = "Enter Person Contact";
+        } else if (document.getElementById("Phone_No").value.trim() == "") {
+            document.getElementById("error4").innerHTML = "Enter Phone Number";
+        } else if (document.getElementById("GSTIN_No").value.trim() == "") {
+            document.getElementById("error4").innerHTML = "Enter GSTIN Number";
+        } else if (document.getElementById("Website").value.trim() == "") {
+            document.getElementById("error4").innerHTML = "Enter Website";
+        } else if (document.getElementById("Branch_Name").value.trim() == "") {
+            document.getElementById("error4").innerHTML = "Enter Branch Name";
+        } else if (document.getElementById("IFSC_Code").value.trim() == "") {
+            document.getElementById("error4").innerHTML = "Enter IFSC Code";
+        } else if (document.getElementById("image2").value.trim() == "") {
+            document.getElementById("error4").innerHTML = "Enter Signature";
+        } else {
+
+            // var CompanyLogo = document.getElementById("img1").value;
+            var CompanyName = document.getElementById("Company_Name").value;
+            var Address = document.getElementById("Address").value;
+            var MobileNo = document.getElementById("Mobile_No").value;
+            var EmailId = document.getElementById("Email_Id").value;
+            var PanNo = document.getElementById("PAN_No").value;
+            var BankName = document.getElementById("Bank_Name").value;
+            var AccountNo = document.getElementById("Account_No").value;
+            var ContactPerson = document.getElementById("ContactPerson").value;
+            var PhoneNo = document.getElementById("Phone_No").value;
+            var GstiNo = document.getElementById("GSTIN_No").value;
+            var Wensite = document.getElementById("Website").value;
+            var BranchName = document.getElementById("Branch_Name").value;
+            var IfscCode = document.getElementById("IFSC_Code").value;
+            // var Signature = document.getElementById("img2").value;
+
+
+
+            var regEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/g;
+            var regPhone = /^\d{10}$/;
+            var reggst = /^([0-9]{2}[a-zA-Z]{4}([a-zA-Z]{1}|[0-9]{1})[0-9]{4}[a-zA-Z]{1}([a-zA-Z]|[0-9]){3}){0,15}$/;
+            var regpan = /^([a-zA-Z]{5})(\d{4})([a-zA-Z]{1})$/;
+            var regacnumber = /^([0-9]{11})|([0-9]{2}-[0-9]{3}-[0-9]{6})$/;
+            //var regName = /\d+$/g;
+            var regweb = /(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g;
+            var regifsc = /^[A-Za-z]{4}[0-9]{6,7}$/;
+
+
+            if (!regPhone.test(MobileNo)) {
+                document.getElementById("error4").innerHTML = "Please enter your Mobile number properly.";
+            } else if (!regEmail.test(EmailId)) {
+                document.getElementById("error4").innerHTML = "Please enter your Email Id properly.";
+            } else if (!regpan.test(PanNo)) {
+                document.getElementById("error4").innerHTML = "Please enter your Pan Number properly.";
+
+            } else if (!regacnumber.test(AccountNo)) {
+                document.getElementById("error4").innerHTML = "Please enter your Account Number properly.";
+            } else if (!regPhone.test(PhoneNo)) {
+                document.getElementById("error4").innerHTML = "Please enter your Phone Number properly.";
+            } else if (!regweb.test(Wensite)) {
+                document.getElementById("error4").innerHTML = "Please enter your website properly.";
+            } else if (!reggst.test(GstiNo)) {
+                document.getElementById("error4").innerHTML = "Please enter your GSTIN Number properly.";
+
+            } else if (!regifsc.test(IfscCode)) {
+                document.getElementById("error4").innerHTML = "Please enter your IFSC Code properly.";
+
+            } else {
+                var CompanyLogo = document.getElementById("image").files;
+                var CompanyName = document.getElementById("Company_Name").value;
+                var Address = document.getElementById("Address").value;
+                var MobileNo = document.getElementById("Mobile_No").value;
+                var EmailId = document.getElementById("Email_Id").value;
+                var PanNo = document.getElementById("PAN_No").value;
+                var BankName = document.getElementById("Bank_Name").value;
+                var AccountNo = document.getElementById("Account_No").value;
+                var ContactPerson = document.getElementById("ContactPerson").value;
+                var PhoneNo = document.getElementById("Phone_No").value;
+                var GstiNo = document.getElementById("GSTIN_No").value;
+                var Wensite = document.getElementById("Website").value;
+                var BranchName = document.getElementById("Branch_Name").value;
+                var IfscCode = document.getElementById("IFSC_Code").value;
+                var Signature = document.getElementById("image2").files;
+
+
+                const getToken = localStorage.getItem("Token")
+                const token = "Bearer" + " " + getToken
+                var myHeaders = new Headers();
+                myHeaders.append("Authorization", token);
+                var formdata = new FormData();
+
+                //console.log(CompanyLogo[0])
+                //var Url =URL.createObjectURL(CompanyLogo[0]);
+                //console.log(Url)
+
+                // const img = new Image();
+
+
+
+
+                //console.log(CompanyLogo[0])
+                //const url = createObjectURL(CompanyLogo[0])
+                //console.log(url)
+                //var fr = new FileReader(CompanyLogo[0]);
+                // var res = fr.result;
+                //fr.readAsDataURL(CompanyLogo[0]);
+                //console.log(res);
+                formdata.append("image", CompanyLogo[0]);
+                formdata.append("Company_Name", CompanyName);
+                formdata.append("Address", Address);
+                formdata.append("Mobile_No", MobileNo);
+                formdata.append("PAN_No", PanNo);
+                formdata.append("Email_Id", EmailId);
+                formdata.append("Bank_Name", BankName);
+                formdata.append("Account_No", AccountNo);
+                formdata.append("ContactPerson", ContactPerson);
+                formdata.append("Phone_No", PhoneNo);
+                formdata.append("GSTIN_No", GstiNo);
+                formdata.append("Website", Wensite);
+                formdata.append("Branch_Name", BranchName);
+                formdata.append("IFSC_Code", IfscCode);
+                formdata.append("image2", Signature[0]);
+                
+                var requestOptions = {
+                    method: 'PUT',
+                    headers: myHeaders,
+                    body: formdata,
+                    redirect: 'follow'
+                };
+
+
+                fetch("http://127.0.0.1:3647/api/Company/63fdefe88c93f7377cad877d", requestOptions)
+                    .then(response => response.json())
+                    .then(result => {
+                        if (!result.error) {
+                            Swal.fire({
+                                // position: 'top-end',
+                                icon: 'success',
+                                title: 'Submit Successful',
+                                showConfirmButton: false,
+                                timer: 3000
+                            })
+
+                        } else {
+                            document.getElementById("error4").innerHTML = result.message
+                            
+                        }
+                    })
+                    .catch(error => console.log('error', error));
+
+
+            }
+
+        }
+    }
+    var loadFile = function (event) {
+        var image = document.getElementById('output');
+        image.src = URL.createObjectURL(event.target.files[0]);
+    };
+    var loadFilee = function (event) {
+        var image = document.getElementById('outputt');
+        image.src = URL.createObjectURL(event.target.files[0]);
+    };
+    function remove() {
+        document.getElementById("image").value = "";
+        document.getElementById("output").src = "";
+        event.preventDefault();
+    };
+    function remove1() {
+        document.getElementById("image2").value = "";
+        document.getElementById("outputt").src = "";
+        event.preventDefault();
+    };
+
+</script>
+
+</html>

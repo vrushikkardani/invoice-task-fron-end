@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {{>head}}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"
+        integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <style>
+        .invoice-box {
+            max-width: 800px;
+            margin: auto;
+            padding: 30px;
+            border: 1px solid #eee;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+            font-size: 16px;
+            line-height: 24px;
+            font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
+            color: #555;
+        }
+
+        .invoice-box table {
+            width: 100%;
+            line-height: inherit;
+            text-align: left;
+        }
+
+        .invoice-box table td {
+            padding: 5px;
+            vertical-align: top;
+        }
+
+
+
+        .invoice-box table tr.top table td {
+            padding-bottom: 20px;
+        }
+
+        .invoice-box table tr.top table td.title {
+            font-size: 45px;
+            line-height: 45px;
+            color: #333;
+        }
+
+        .invoice-box table tr.information table td {
+            padding-bottom: 40px;
+        }
+
+        .invoice-box table tr.heading td {
+            background: #eee;
+            border-bottom: 1px solid #ddd;
+            font-weight: bold;
+        }
+
+        .invoice-box table tr.details td {
+            padding-bottom: 20px;
+        }
+
+        .invoice-box table tr.item td {
+            border-bottom: 1px solid #eee;
+        }
+
+        .invoice-box table tr.item.last td {
+            border-bottom: none;
+        }
+
+        .invoice-box table tr.total td:nth-child(2) {
+            border-top: 2px solid #eee;
+            font-weight: bold;
+        }
+
+        @media only screen and (max-width: 600px) {
+            .invoice-box table tr.top table td {
+                width: 100%;
+                display: block;
+                text-align: center;
+            }
+
+            .invoice-box table tr.information table td {
+                width: 100%;
+                display: block;
+                text-align: center;
+            }
+        }
+
+        /** RTL **/
+        .invoice-box.rtl {
+            direction: rtl;
+            font-family: Tahoma, 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
+        }
+
+        .invoice-box.rtl table {
+            text-align: right;
+        }
+
+        .invoice-box.rtl table tr td:nth-child(2) {
+            text-align: left;
+        }
+
+        #daddress {
+            width: 170px;
+            word-wrap: break-word;
+        }
+    </style>
+    {{!--
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.3.6/css/buttons.dataTables.min.css"> --}}
+
+</head>
+
+<body>
+    <!-- Main Wrapper -->
+    <div class="main-wrapper">
+
+        <!-- Header -->
+        {{>header}}
+        <!-- /Header -->
+
+        <!-- Sidebar -->
+        {{>sidebar}}
+        <!-- /Sidebar -->
+
+        <!-- Page Wrapper -->
+        <div class="page-wrapper">
+
+            <div class="content container-fluid">
+                <div class="page-header">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <h3 class="page-title">Invoice</h3>
+                            <ul class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="index">Home</a></li>
+                                <li class="breadcrumb-item active">Invoice</li>
+                            </ul>
+                        </div>
+                        <div class="col-auto float-right ml-auto">
+                            <a href="createInvoice" class="btn add-btn"><i class="fa fa-plus"></i> Create Invoice</a>
+                        </div>
+                    </div>
+
+                </div>
+                {{!--
+                <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+                <button onclick="exportReportToExcel()">
+                    <span class="glyphicon glyphicon-download"></span>
+                    Download list
+                </button> --}}
+                {{>addinvoice}}
+
+
+            </div>
+
+
+
+        </div>
+
+    </div>
+    <!-- /Page Wrapper -->
+
+    </div>
+    <!-- /Main Wrapper -->
+
+    {{>js}}
+
+</body>
+
+
+{{!--
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.3.6/js/dataTables.buttons.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.print.min.js"></script> --}}
+<script src="js/jspdf.debug.js"></script>
+<script src="js/html2canvas.min.js"></script>
+<script src="js/html2pdf.min.js"></script>
+<script>
+    $(document).ready(function () {
+
+    });
+    $(document).ready(function () {
+        $('#liinvoice').addClass('active');
+        if ($('.datetimepicker').length > 0) {
+            $('.datetimepicker').datetimepicker({
+                format: 'DD/MM/YYYY',
+                icons: {
+                    up: "fa fa-angle-up",
+                    down: "fa fa-angle-down",
+                    next: 'fa fa-angle-right',
+                    previous: 'fa fa-angle-left'
+                }
+            });
+        }
+    });
+
+
+
+    db2()
+    function db2() {
+
+        var requestOptions = {
+            method: 'GET',
+            redirect: 'follow'
+        };
+        fetch("http://127.0.0.1:3647/api/invoice", requestOptions)
+            .then(response => response.json())
+            .then(result => {
+
+                var table = document.getElementById('tbd');
+                table.innerHTML = "";
+                for (i = 0; i < result.data.length; i++) {
+                    var ino = result.data[i].Invoic_Number
+                    var cname = result.data[i].Customer_Name
+                    var date = result.data[i].Date
+                    var InvoiceItem = result.data[i].InvoiceItem
+                    var gttl = result.data[i].Grand_Total
+                    //console.log(gttl)
+                    var id = result.data[i]._id
+                    var template = `
+                            <tr>
+							<td>${ino}</td>
+							<td>${cname}</td>
+							<td>${date}</td>
+							<td>${gttl}</td>
+							<td class="text-right">
+								<div class="dropdown dropdown-action">
+									<a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown"
+										aria-expanded="false"><i class="material-icons">more_vert</i></a>
+									<div class="dropdown-menu dropdown-menu-right">
+										<a onclick="{edit5('${id}')}" class="dropdown-item" href="#" data-toggle="modal"
+											data-target="#edit5"><i class="fa fa-pencil m-r-5"></i> Edit</a>
+										<a onclick="{view('${id}')}" class="dropdown-item" href="#" data-toggle="modal"
+											data-target="#view"><i class="fa fa-eye m-r-5"></i> View</a>
+										<a  onclick="{Download('${id}')}"class="dropdown-item" href="#" data-toggle="modal"
+											data-target="#download"><i class="fa fa-file-pdf-o m-r-5"></i> Download</a>
+										<a onclick="{Delete2('${id}')}" class="dropdown-item" href="#" data-toggle="modal"
+											data-target="#delete_department"><i class="fa fa-trash-o m-r-5"></i>
+											Delete</a>
+									</div>
+								</div>
+							</td>
+						</tr>
+                    `;
+                    table.innerHTML += template;
+                }
+                // (001)
+
+            })
+            .catch(error => console.log('error', error));
+
+
+
+
+
+    }
+
+
+
+    function Delete2(id) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire(
+                    'Deleted!',
+                    'Your file has been deleted.',
+                    'success'
+                )
+                const getToken = localStorage.getItem("Token")
+                const token = "Bearer" + " " + getToken
+                var myHeaders = new Headers();
+                myHeaders.append("Authorization", token);
+                var urlencoded = new URLSearchParams();
+
+                var requestOptions = {
+                    method: 'DELETE',
+                    headers: myHeaders,
+                    body: urlencoded,
+                    redirect: 'follow'
+                };
+
+                fetch(`http://127.0.0.1:3647/api/invoice/${id}`, requestOptions)
+                    .then(response => response.json())
+                    .then(result => {
+                        if (!result.error) {
+                            db2()
+                        } else {
+                            document.getElementById("error").innerHTML = result.message
+                        }
+                    })
+                    .catch(error => console.log('error', error));
+            }
+        })
+
+    }
+
+
+
+
+
+
+    function view(id) {
+
+        var requestOptions = {
+            method: 'GET',
+            redirect: 'follow'
+        };
+
+        fetch(`http://127.0.0.1:3647/api/invoice/${id}`, requestOptions)
+            .then(response => response.json())
+            .then(result => {
+                var table = document.getElementById('tbd5');
+                table.innerHTML = "";
+                var cgst1 = result.data.CGST_Total;
+                var sgst1 = result.data.SGST_Total;
+                var igst1 = result.data.IGST_Total;
+                var gttl = result.data.Grand_Total;
+                console.log(gttl)
+                document.getElementById('cgsttxt').innerText = cgst1
+                document.getElementById('sgsttxt').innerText = sgst1
+                document.getElementById('igsttxt').innerText = igst1
+                document.getElementById('txtgttl').innerText = gttl
+
+                for (i = 0; i < result.data.InvoiceItem.length; i++) {
+                    var ItemName = result.data.InvoiceItem[i].ItemName;
+                    var Service_Description = result.data.InvoiceItem[i].Service_Description;
+                    var SAC_code = result.data.InvoiceItem[i].SAC_code;
+                    var Net_Amount = result.data.InvoiceItem[i].Net_Amount;
+                    var CGST = result.data.InvoiceItem[i].CGST;
+                    var CGST_Amount = result.data.InvoiceItem[i].CGST_Amount;
+                    var SGST = result.data.InvoiceItem[i].SGST;
+                    var SGST_Amount = result.data.InvoiceItem[i].SGST_Amount;
+                    var IGST = result.data.InvoiceItem[i].IGST;
+                    var IGST_Amount = result.data.InvoiceItem[i].IGST_Amount;
+                    var CGST_Total = result.data.InvoiceItem[i].Total;
+                    var Total = result.data.InvoiceItem[i].Total;
+
+
+                    var template = `
+                    <tr>
+							<td>${ItemName}</td>
+							<td>${Service_Description}</td>
+							<td>${SAC_code}</td>
+							<td>${Net_Amount}</td>
+							<td>${CGST}</td>
+							<td>${CGST_Amount}</td>
+							<td>${SGST}</td>
+							<td>${SGST_Amount}</td>
+							<td>${IGST}</td>
+							<td>${IGST_Amount}</td>
+							<td>${Total}</td>
+                            </tr>
+                    `;
+                    table.innerHTML += template;
+                }
+
+
+
+            })
+            .catch(error => console.log('error', error));
+
+    }
+
+    function edit5(id) {
+
+        var requestOptions = {
+            method: 'GET',
+            redirect: 'follow'
+        };
+
+        fetch(`http://127.0.0.1:3647/api/invoice/${id}`, requestOptions)
+            .then(response => response.json())
+            .then(result => {
+                var table = document.getElementById('tbd7');
+                table.innerHTML = "";
+                var invno = result.data.Invoic_Number;
+                document.getElementById('txtinv').value = invno
+                var cname = result.data.Customer_Name;
+                document.getElementById('txtcname').value = cname
+                var date = result.data.Date;
+                document.getElementById('date').value = date
+                //console.log(result.data.Grand_Total)
+                document.getElementById("txtcgst").innerHTML = result.data.CGST_Total;
+                document.getElementById("txtsgst").innerHTML = result.data.SGST_Total;
+                document.getElementById("txtigst").innerHTML = result.data.IGST_Total;
+                document.getElementById("txttotal").innerHTML = result.data.Grand_Total;
+                document.getElementById("id").value = id;
+                for (i = 0; i < result.data.InvoiceItem.length; i++) {
+                    var ItemName = result.data.InvoiceItem[i].ItemName;
+                    var Service_Description = result.data.InvoiceItem[i].Service_Description;
+                    var SAC_code = result.data.InvoiceItem[i].SAC_code;
+                    var Net_Amount = result.data.InvoiceItem[i].Net_Amount;
+                    var CGST = result.data.InvoiceItem[i].CGST;
+                    var CGST_Amount = result.data.InvoiceItem[i].CGST_Amount;
+                    var SGST = result.data.InvoiceItem[i].SGST;
+                    var SGST_Amount = result.data.InvoiceItem[i].SGST_Amount;
+                    var IGST = result.data.InvoiceItem[i].IGST;
+                    var IGST_Amount = result.data.InvoiceItem[i].IGST_Amount;
+                    var Total = result.data.InvoiceItem[i].Total;
+
+                    //  console.log(ItemName)
+                    var template = `
+                   
+
+                            <tr>
+
+									<td>
+										<input class="form-control" type="text" style="min-width:150px" value=${ItemName}>
+									</td>
+									<td>
+										<input class="form-control" type="text" style="min-width:150px" value=${Service_Description}>
+									</td>
+									<td>
+										<input class="saccode form-control" min="0"  style="width:100px" type="number" value=${SAC_code}>
+									</td>
+									<td>
+										<input class="netamount form-control" onchange="calculate1(this)" min="0"  style="width:100px" type="number" value=${Net_Amount}>
+									</td>
+									<td>
+										<input class="cgst form-control" onchange="calculate1(this)" min="0"  style="width:80px" type="number" value=${CGST}>
+									</td>
+									<td>
+										<input class="cgstamount1 form-control" onchange="calculate1(this)" min="0"  style="width:80px" type="number" value=${CGST_Amount} disabled>
+									</td>
+									<td>
+										<input class="sgst form-control" onchange="calculate1(this)" min="0"  style="width:80px" type="number" value=${SGST}>
+									</td>
+									<td>
+										<input class="sgstamount1 form-control" onchange="calculate1(this)" min="0"  style="width:80px" type="number" value=${SGST_Amount} disabled>
+									</td>
+									<td>
+										<input class="igst form-control" onchange="calculate1(this)" min="0" style="width:80px" type="number" value=${IGST}>
+									</td>
+									<td>
+										<input class="igstamount1 form-control" onchange="calculate1(this)" min="0" style="width:80px" type="number" value=${IGST_Amount} disabled>
+									</td>
+									<td>
+										<input class="total form-control" disabled style="width:120px" type="text" value=${Total}>
+									</td>
+                                    <td><a onclick="Delete1(this)" class="text-danger font-18" title="Remove"><i class="fa fa-trash-o"></i></a></td>
+								</tr>
+                    `;
+                    table.innerHTML += template;
+                }
+
+            })
+            .catch(error => console.log('error', error));
+
+    }
+
+    function additem1() {
+        event.preventDefault();
+        if (document.getElementById("date").value.trim() == "") {
+            document.getElementById("error5").innerHTML = "Enter Date "
+        } else {
+            var table = document.getElementById("tbd7");
+            const html = `
+        <tr>
+
+									<td>
+										<input class="form-control" type="text" style="min-width:150px">
+									</td>
+									<td>
+										<input class="form-control" type="text" style="min-width:150px" >
+									</td>
+									<td>
+										<input class="saccode form-control" min="0"  style="width:100px" type="number" >
+									</td>
+									<td>
+										<input class="netamount form-control" onchange="calculate1(this)" min="0"  style="width:100px" type="number" >
+									</td>
+									<td>
+										<input class="cgst form-control" onchange="calculate1(this)" min="0"  style="width:80px" type="number" >
+									</td>
+                                    <td>
+										<input class="cgstamount1 form-control" onchange="calculate(this)" min="0"  style="width:80px" type="number" disabled>
+									</td>
+									<td>
+										<input class="sgst form-control" onchange="calculate1(this)" min="0"  style="width:80px" type="number" >
+									</td>
+                                    <td>
+										<input class="sgstamount1 form-control" onchange="calculate(this)" min="0"  style="width:80px" type="number" disabled>
+									</td>
+									<td>
+										<input class="igst form-control" onchange="calculate1(this)" min="0" style="width:80px" type="number" >
+									</td>
+                                    <td>
+										<input class="igstamount1 form-control" onchange="calculate(this)" min="0" style="width:80px" type="number" disabled >
+									</td>
+									<td>
+										<input class="total form-control" disabled style="width:120px" type="text" >
+									</td>
+                                    <td><a onclick="Delete1(this)" class="text-danger font-18" title="Remove"><i class="fa fa-trash-o"></i></a></td>
+								</tr>
+        `
+            var newRow = table.insertRow(table.rows.length);
+            newRow.innerHTML = html;
+
+        }
+    }
+
+    function total1(f) {
+        var table = document.getElementById("tbd7");
+        let total = 0;
+        for (var j = 0; j < table.childElementCount; j++) {
+            var x = document.getElementById("tbd7").rows[j].cells[10].getElementsByTagName('input')[0].value.trim();
+            total += parseInt(x);
+
+        }
+        //console.log(total)
+        document.getElementById("txttotal").innerHTML = total;
+    }
+    function cgst1(m) {
+        var table = document.getElementById("tbd7");
+        let cgst1 = 0;
+        for (var j = 0; j < table.childElementCount; j++) {
+            var x = document.getElementById("tbd7").rows[j].cells[5].getElementsByTagName('input')[0].value.trim();
+            cgst1 += parseInt(x);
+
+        }
+        //console.log(total)
+        document.getElementById("txtcgst").innerText = cgst1;
+    }
+    function sgst1(n) {
+        var table = document.getElementById("tbd7");
+        let sgst1 = 0;
+        for (var j = 0; j < table.childElementCount; j++) {
+            var x = document.getElementById("tbd7").rows[j].cells[7].getElementsByTagName('input')[0].value.trim();
+            sgst1 += parseInt(x);
+
+        }
+        //console.log(total)
+        document.getElementById("txtsgst").innerText = sgst1;
+    }
+    function igst1(o) {
+        var table = document.getElementById("tbd7");
+        let igst1 = 0;
+        for (var j = 0; j < table.childElementCount; j++) {
+            var x = document.getElementById("tbd7").rows[j].cells[9].getElementsByTagName('input')[0].value.trim();
+            igst1 += parseInt(x);
+
+        }
+        //console.log(total)
+        document.getElementById("txtigst").innerText = igst1;
+    }
+
+
+    function calculate1(g) {
+        var tr = g.parentElement.parentElement;
+
+        var NetAmount = tr.getElementsByClassName('netamount')[0].value;
+
+        var Cgst = tr.getElementsByClassName('cgst')[0].value;
+        var Sgst = tr.getElementsByClassName('sgst')[0].value;
+        var Igst = tr.getElementsByClassName('igst')[0].value;
+        var c1 = parseFloat((Cgst * NetAmount) / 100);
+        tr.getElementsByClassName('cgstamount1')[0].value = c1;
+        var c2 = parseFloat((Sgst * NetAmount) / 100);
+        tr.getElementsByClassName('sgstamount1')[0].value = c2;
+        var c3 = parseFloat((Igst * NetAmount) / 100);
+        tr.getElementsByClassName('igstamount1')[0].value = c3;
+        var ttl = (parseInt(NetAmount) + c1 + c2 + c3).toFixed(2);
+        tr.getElementsByClassName('total')[0].value = ttl;
+        total1(this);
+        cgst1(this);
+        sgst1(this);
+        igst1(this);
+
+    }
+
+    function Delete1(h) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire(
+                    'Deleted!',
+                    'Your file has been deleted.',
+                    'success'
+                )
+                h.closest('tr').remove();
+            }
+            total1(this);
+            cgst1(this);
+            sgst1(this);
+            igst1(this);
+        })
+
+    }
+
+    function itemvalid() {
+        var table = document.getElementById("tbd7");
+        var valid = "";
+        for (var n = 0; n < table.childElementCount; n++) {
+            let row = table.rows[n]
+            if (document.getElementById("tbd7").rows[n].cells[0].getElementsByTagName('input')[0].value.trim() == "" && document.getElementById("tbd7").rows[n].cells[1].getElementsByTagName('input')[0].value.trim() == "" && document.getElementById("tbd7").rows[n].cells[2].getElementsByTagName('input')[0].value.trim() == "" && document.getElementById("tbd7").rows[n].cells[3].getElementsByTagName('input')[0].value.trim() == "" && document.getElementById("tbd7").rows[n].cells[4].getElementsByTagName('input')[0].value.trim() == "" && document.getElementById("tbd7").rows[n].cells[5].getElementsByTagName('input')[0].value.trim() == "" && document.getElementById("tbd7").rows[n].cells[6].getElementsByTagName('input')[0].value.trim() == "") {
+                valid = "Enter Item , Service Description , Net Amount , CGST , SGST and IGST";
+            } else if (document.getElementById("tbd7").rows[n].cells[0].getElementsByTagName('input')[0].value.trim() == "") {
+                valid = "Enter Item"
+            } else if (document.getElementById("tbd7").rows[n].cells[1].getElementsByTagName('input')[0].value.trim() == "") {
+                valid = "Enter Service Description"
+            } else if (document.getElementById("tbd7").rows[n].cells[2].getElementsByTagName('input')[0].value.trim() == "") {
+                valid = "Enter SAC Code"
+            } else if (document.getElementById("tbd7").rows[n].cells[3].getElementsByTagName('input')[0].value.trim() == "") {
+                valid = "Enter Net Amount"
+            } else if (document.getElementById("tbd7").rows[n].cells[4].getElementsByTagName('input')[0].value.trim() == "") {
+                valid = "Enter CGST"
+            } else if (document.getElementById("tbd7").rows[n].cells[5].getElementsByTagName('input')[0].value.trim() == "") {
+                valid = "Enter SGST"
+            } else if (document.getElementById("tbd7").rows[n].cells[6].getElementsByTagName('input')[0].value.trim() == "") {
+                valid = "Enter IGST"
+            } else if (document.getElementById("date").value.trim() == "") {
+                valid = "Enter Date"
+            }
+        }
+        return valid;
+
+    }
+
+    function updateinv(id) {
+        event.preventDefault();
+        var isv = itemvalid();
+        if (isv == "") {
+            var table = document.getElementById("tbd7");
+            var invono = document.getElementById("txtinv").value;
+            var cname = document.getElementById("txtcname").value;
+            var date = document.getElementById("date").value;
+            var txtcgst = document.getElementById("txtcgst").innerText;
+            var txtsgst = document.getElementById("txtsgst").innerText;
+            var txtigst = document.getElementById("txtigst").innerText;
+            var gttl = document.getElementById("txttotal").innerText;
+            var _id = document.getElementById("id").value;
+            console.log(_id)
+            var ary = [];
+
+            for (var m = 0; m < table.childElementCount; m++) {
+                let row = table.rows[m]
+                var item = document.getElementById("tbd7").rows[m].cells[0].getElementsByTagName('input')[0].value;
+                var sdescription = document.getElementById("tbd7").rows[m].cells[1].getElementsByTagName('input')[0].value;
+                var scode = document.getElementById("tbd7").rows[m].cells[2].getElementsByTagName('input')[0].value;
+                var namunt = document.getElementById("tbd7").rows[m].cells[3].getElementsByTagName('input')[0].value;
+                var cgst = document.getElementById("tbd7").rows[m].cells[4].getElementsByTagName('input')[0].value;
+                var cgst2 = document.getElementById("tbd7").rows[m].cells[5].getElementsByTagName('input')[0].value;
+                var igst = document.getElementById("tbd7").rows[m].cells[6].getElementsByTagName('input')[0].value;
+                var igst2 = document.getElementById("tbd7").rows[m].cells[7].getElementsByTagName('input')[0].value;
+                var sgst = document.getElementById("tbd7").rows[m].cells[8].getElementsByTagName('input')[0].value;
+                var sgst2 = document.getElementById("tbd7").rows[m].cells[9].getElementsByTagName('input')[0].value;
+                var ttl = document.getElementById("tbd7").rows[m].cells[10].getElementsByTagName('input')[0].value;
+                ary.push({ ItemName: item, Service_Description: sdescription, SAC_code: scode, Net_Amount: namunt, CGST: cgst,CGST_Amount:cgst2, SGST: sgst,SGST_Amount:sgst2, IGST: igst,IGST_Amount:igst2, Total: ttl })
+            }
+
+            const getToken = localStorage.getItem("Token")
+            const token = "Bearer" + " " + getToken
+            var myHeaders = new Headers();
+            myHeaders.append("Authorization", token);
+            myHeaders.append("Content-Type", "application/json");
+            var data = {
+                Invoic_Number: invono,
+                Customer_Name: cname,
+                Date: date,
+                InvoiceItem: ary,
+                CGST_Total: txtcgst,
+                SGST_Total: txtsgst,
+                IGST_Total: txtigst,
+                Grand_Total: gttl
+            }
+            var raw = JSON.stringify(data);
+
+
+            var requestOptions = {
+                method: 'PUT',
+                headers: myHeaders,
+                body: raw,
+                redirect: 'follow'
+            };
+
+            fetch(`http://127.0.0.1:3647/api/invoice/${_id}`, requestOptions)
+                .then(response => response.json())
+                .then(result => {
+                    if (!result.error) {
+                        Swal.fire({
+                            // position: 'top-end',
+                            icon: 'success',
+                            title: 'Update Sucessful',
+                            showConfirmButton: false,
+                            timer: 3000
+                        })
+                        setTimeout(function () {
+                            window.location.href = "invoice";
+                        }, 3000);
+                    } else {
+                        document.getElementById("error6").innerHTML = result.message
+                    }
+                })
+                .catch(error => console.log('error', error));
+        } else {
+            document.getElementById("error6").innerHTML = isv;
+        }
+    }
+
+
+    function Download(id) {
+
+
+
+        auther()
+        var requestOptions = {
+            method: 'GET',
+            redirect: 'follow'
+        };
+        fetch(`http://127.0.0.1:3647/api/invoice/${id}`, requestOptions)
+            .then(response => response.json())
+            .then(result => {
+                var table = document.getElementById('tbd10')
+                table.innerHTML = "";
+                var invno = result.data.Invoic_Number;
+                document.getElementById("dinvno").innerText = "Invoice No.:" + invno
+                var ddate = result.data.Date;
+                document.getElementById("ddate").innerText = "Date:" + ddate
+                var dcname = result.data.Customer_Name;
+                document.getElementById("dcname").innerText = "Customer Name:" + dcname
+                var dgcgst = result.data.CGST_Total;
+                document.getElementById("dgcgst").innerText = "Total CGST:" + dgcgst
+                var dgsgst = result.data.SGST_Total;
+                document.getElementById("dgsgst").innerText = "Total SGST:" + dgsgst
+                var dgigst = result.data.IGST_Total;
+                document.getElementById("dgigst").innerText = "Total IGST :" + dgigst
+                var dgttl = result.data.Grand_Total;
+                document.getElementById("dgttl").innerText = "Grand Total :" + dgttl
+                for (i = 0; i < result.data.InvoiceItem.length; i++) {
+                    var ItemName = result.data.InvoiceItem[i].ItemName;
+                    var SAC_code = result.data.InvoiceItem[i].SAC_code;
+                    var Net_Amount = result.data.InvoiceItem[i].Net_Amount;
+                    var CGST = result.data.InvoiceItem[i].CGST;
+                    var SGST = result.data.InvoiceItem[i].SGST;
+                    var IGST = result.data.InvoiceItem[i].IGST;
+                    var Total = result.data.InvoiceItem[i].Total;
+                    var template = `
+                    <tr>
+                                <td>${ItemName}</td>
+								<td>${SAC_code}</td>
+								<td>${Net_Amount}</td>
+								<td>${CGST}</td>
+								<td>${SGST}</td>
+								<td>${IGST}</td>
+								<td>${Total}</td>
+                    </tr>
+                    `;
+                    table.innerHTML += template;
+                }
+
+
+            })
+            .catch(error => console.log('error', error));
+    }
+
+    function auther() {
+        const getToken = localStorage.getItem("Token")
+        const token = "Bearer" + " " + getToken
+        var myHeaders = new Headers();
+        myHeaders.append("Authorization", token);
+
+        var requestOptions = {
+            method: 'GET',
+            headers: myHeaders,
+        };
+
+
+        fetch(APIURl + "/api/company", requestOptions)
+            .then(response => response.json())
+            .then(result => {
+
+                document.getElementById("output10").src = APIURl + '/user-profile/' + result.data[0].image;
+                document.getElementById("dname").innerText = result.data[0].Company_Name;
+                document.getElementById("daddress").innerText = result.data[0].Address;
+                document.getElementById("deid").innerText = result.data[0].Email_Id;
+
+            })
+            .catch(error => console.log('error', error));
+    }
+    function printDiv() {
+        var printContents = document.getElementById('pdf').innerHTML;
+        var originalContents = document.body.innerHTML;
+
+        document.body.innerHTML = printContents;
+
+        window.print();
+
+        document.body.innerHTML = originalContents;
+        location.reload();
+    }
+
+
+</script>
+{{!--
+<script>
+    const options = {
+        //margin: 0.5,
+        filename: 'invoice.pdf',
+        image: {
+            type: 'jpeg',
+            quality: 10000
+        },
+
+        jsPDF: {
+            unit: 'in',
+            format: 'letter',
+            orientation: 'portrait'
+        }
+    }
+
+    $('.btn-download').click(function (e) {
+        // e.preventDefault();
+        printDiv();
+        // const element = document.getElementById('pdf');
+        // html2pdf().from(element).set(options).save();
+    });
+
+</script> --}}
+
+</html>
+
+
+{{!-- function exportReportToExcel() {
+let table = document.getElementsByTagName("table"); // you can use document.getElementById('tableId') as well by
+providing id to the table tag
+TableToExcel.convert(table[0], { // html code may contain multiple tables so here we are refering to 1st table tag
+name: `export.xlsx`, // fileName you could use any name
+sheet: {
+name: 'Sheet 1' // sheetName
+}
+});
+} --}}
+
+{{!-- function exportData() {
+/* Get the HTML data using Element by Id */
+var table = document.getElementById("hii");
+
+/* Declaring array variable */
+var rows = [];
+
+//iterate through rows of table
+for (var i = 0, row; row = table.rows[i]; i++) {
+//rows would be accessed using the "row" variable assigned in the for loop
+//Get each cell value/column from the row
+column1 = row.cells[0].innerText;
+column2 = row.cells[1].innerText;
+column3 = row.cells[2].innerText;
+column4 = row.cells[3].innerText;
+column5 = row.cells[4].innerText;
+
+/* add a new records in the array */
+rows.push(
+[
+column1,
+column2,
+column3,
+column4,
+column5
+]
+);
+
+}
+//csvContent = "data:text/xlsx;charset=utf-8,";
+/* add the column delimiter as comma(,) and each row splitted by new line character (\n) */
+rows.forEach(function (rowArray) {
+row = rowArray.join(",");
+csvContent += row + "\r\n";
+});
+
+/* create a hidden <a> DOM node and set its download attribute */
+    var encodedUri = encodeURI(csvContent);
+    var link = document.createElement("a");
+    link.setAttribute("href", rows);
+    link.setAttribute("download", "Stock_Price_Report.xlsx");
+    document.body.appendChild(link);
+    /* download the data file named "Stock_Price_Report.csv" */
+    link.click();
+    } --}}
+
+
+    {{!-- (001) ------>$('#hii').DataTable({
+    dom: 'Bfrtip',
+    buttons: [
+
+    {
+    extend: 'excelHtml5',
+    exportOptions: {
+    columns: [ 0, 1, 2 , 3 ]
+    }
+    },
+    {
+    extend: 'pdfHtml5',
+    exportOptions: {
+    columns: [ 0, 1, 2 , 3 ]
+    }
+    },
+    'colvis'
+    ]
+    }); --}}

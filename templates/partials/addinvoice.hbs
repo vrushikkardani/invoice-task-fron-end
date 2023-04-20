@@ -1,0 +1,315 @@
+<!-- Page Content -->
+<div class="content container-fluid">
+	<div class="row">
+		<div class="col-md-12">
+			<div>
+				<table class="table table-striped custom-table mb-0 datatable" id="hii">
+					<thead>
+						<tr>
+							<th>Invoice No.</th>
+							<th>Customer Name</th>
+							<th>Date</th>
+							<th>Grand Total</th>
+							<th class="text-right">Action</th>
+						</tr>
+					</thead>
+					<tbody id="tbd">
+
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<!-- View -->
+<div id="view" class="modal custom-modal fade" role="dialog">
+	<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Invoice Item</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="row">
+				<div class="modal-body">
+					<table class="table table-striped custom-table mb-0 datatable">
+						<thead>
+							<tr>
+								<th>Item Name</th>
+								<th>Service Description</th>
+								<th>SAC code</th>
+								<th>Net Amount</th>
+								<th>CGST</th>
+								<th>CGST Amount</th>
+								<th>SGST</th>
+								<th>SGST Amount</th>
+								<th>IGST</th>
+								<th>IGST Amount</th>
+								<th>Total</th>
+
+							</tr>
+						</thead>
+						<tbody id="tbd5">
+
+						</tbody>
+					</table>
+					<br>
+					{{!-- <div class="col-sm-6 col-md-3"> --}}
+						<div class="form-group">
+							<label>CGST Total :</label>
+							<span class="text-right" id="cgsttxt"></span>
+							{{!-- <input class="text-right" id="cgsttxt" type="text" disabled> --}}
+						</div>
+						<div class="form-group">
+							<label>SGST Total</label>
+							<span class="text-right" id="sgsttxt"></span>
+							{{!-- <input class="form-control text-right" id="sgsttxt" type="text" disabled> --}}
+						</div>
+						<div class="form-group">
+							<label>IGST Total</label>
+							<span class="text-right" id="igsttxt"></span>
+							{{!-- <input class="form-control text-right" id="igsttxt" type="text" disabled> --}}
+						</div>
+						<div class="form-group">
+							<label>Grand Total</label>
+							<span class="text-right" id="txtgttl"></span>
+							{{!-- <input class="form-control text-right" id="txtgttl" type="text" disabled> --}}
+						</div>
+						{{!--
+					</div> --}}
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- /View -->
+<!-- Edit -->
+<div id="edit5" class="modal custom-modal fade" role="dialog">
+	<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Invoice Item</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+
+			<br>
+			<br>
+
+			{{!-- <div class="row"> --}}
+				<div class="col-sm-12">
+					<form>
+						<div class="row">
+
+							<div class="col-sm-6 col-md-3">
+								<div class="form-group">
+									<label>Invoice No.</label>
+									<input class="form-control" id="txtinv" type="text" disabled>
+								</div>
+							</div>
+							<div class="col-sm-6 col-md-3">
+								<div class="form-group">
+									<label>Customer Name:</label>
+									<input class="form-control" id="txtcname" type="text" disabled>
+								</div>
+							</div>
+							<div class="col-sm-6 col-md-3">
+								<div class="form-group">
+									<label>Date</label>
+									<input class="form-control datetimepicker" id="date" type="text">
+								</div>
+							</div>
+
+							<input class="form-control" id="id" type="text" hidden>
+
+							{{!-- <div class="col-sm-6 col-md-3">
+								<div class="form-group">
+									<label>SAC code</label>
+									<input class="form-control" id="saccode" type="taxt">
+								</div>
+							</div> --}}
+
+						</div>
+
+					</form>
+					<div class="submit-section">
+
+						<button class="btn btn-primary submit-btn m-r-10" onclick="additem1()">Add Item</button>
+					</div>
+					<p id="error5" class="text-center text-danger"></p>
+					<br>
+					<br>
+
+					<div class="row">
+						<div class="col-md-12 col-sm-12">
+							<div class="table-responsive">
+								<table class="table table-hover table-white">
+									<thead>
+										<tr>
+
+											<th>Item</th>
+											<th>Service Description</th>
+											<th>SAC code</th>
+											<th>Net Amount</th>
+											<th>CGST(%)</th>
+											<th>CGST Amount</th>
+											<th>SGST(%)</th>
+											<th>SGST Amount</th>
+											<th>IGST(%)</th>
+											<th>IGST Amount</th>
+											<th>Total</th>
+											<th> </th>
+										</tr>
+									</thead>
+									<tbody id="tbd7">
+									</tbody>
+									<tfoot>
+								<tr>
+									<td colspan="8"> </td>
+									<td colspan="2" class="text-right">CGST Total </td>
+									<td colspan="2" class="text-right" id="txtcgst">0 </td>
+								</tr>
+								<tr>
+									<td colspan="8"> </td>
+									<td colspan="2" class="text-right">SGST Total </td>
+									<td colspan="2" class="text-right" id="txtsgst">0 </td>
+								</tr>
+								<tr>
+									<td colspan="8"> </td>
+									<td colspan="2" class="text-right">IGST Total </td>
+									<td colspan="2" class="text-right" id="txtigst">0 </td>
+								</tr>
+								<tr>
+									<td colspan="8"> </td>
+									<td colspan="2" class="text-right">Total </td>
+									<td colspan="2" class="text-right" id="txttotal">0 </td>
+								</tr>
+							</tfoot>
+
+								</table>
+
+
+
+							</div>
+
+						</div>
+
+					</div>
+					<div class="submit-section">
+						<button class="btn btn-primary submit-btn m-r-10" onclick="updateinv()">Update &
+							Save</button>
+					</div>
+					<p id="error6" class="text-center text-danger"></p>
+				</div>
+			</div>
+
+
+		</div>
+	</div>
+</div>
+</div>
+</div>
+
+
+<!-- /Edit -->
+{{!-- Download --}}
+
+
+<div id="download" class="modal custom-modal fade" role="dialog">
+	<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Download Invoice</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body" id="pdf">
+				<div class="invoice-box">
+					<img id="output10" style=" width: 250px">
+					<div class="text-right pro-deadline m-b-15">
+						<div class="sub-title" id="dinvno">
+
+						</div>
+						<div class="sub-title" id="ddate">
+
+						</div>
+						<div class="sub-title" id="dcname">
+
+						</div>
+					</div>
+					<br>
+					<div class="text-left pro-deadline m-b-15">
+						<div class="sub-title" id="dname">
+
+						</div>
+						<div class="sub-title" id="deid">
+
+						</div>
+						<div class="sub-title" id="daddress">
+
+						</div>
+					</div>
+					<br>
+					<table class="table table-striped custom-table mb-0 datatable">
+						<thead>
+							<tr>
+
+								<th>Item</th>
+								<th>SAC code</th>
+								<th>Net Amount</th>
+								<th>CGST(%)</th>
+								<th>SGST(%)</th>
+								<th>IGST(%)</th>
+								<th>Total</th>
+							</tr>
+						</thead>
+						<tbody id="tbd10">
+
+						</tbody>
+					</table>
+					<br>
+					<br>
+					<div class="text-right pro-deadline m-b-15">
+						<div class="sub-title" id="dgcgst">
+							kjdsk
+						</div>
+					</div>
+					<div class="text-right pro-deadline m-b-15">
+						<div class="sub-title" id="dgsgst">
+							sdkj
+						</div>
+					</div>
+					<div class="text-right pro-deadline m-b-15">
+						<div class="sub-title" id="dgigst">
+							lsdk
+						</div>
+					</div>
+					<div class="text-right pro-deadline m-b-15">
+						<div class="sub-title" id="dgttl">
+
+						</div>
+					</div>
+				</div>
+
+			</div>
+			<div class="modal-body">
+				<div class="submit-section">
+					<button class="btn-download btn-primary submit-btn m-r-10" onclick="printDiv()">Download
+						PDF</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+
+
+
+	{{!-- /Download --}}
+
+	<!-- /Page Content -->
